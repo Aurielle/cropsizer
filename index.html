@@ -1,0 +1,134 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Cropsizer</title>
+    <link href="style.css" rel="stylesheet">
+    <link href="jquery.switchButton.css" rel="stylesheet">
+    <link rel="stylesheet" href="jquery-ui-1.10.4.custom.css">  
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+
+	<script type="text/javascript" src="canvasTools.js"></script>
+    <script type="text/javascript" src="jquery.switchButton.js"></script>
+    <script type="text/javascript" src="application.js"></script>
+  </head>
+  <body>
+  	
+  	<!-- main actions panel -->       
+    <div id="panel">
+      <div id="toolbar_top">
+		<div class="panelhead">Actions</div>
+        <a href="#" id="btn_new" class="btn_file"><u>N</u>ew</a><a href="#" id="btn_crop" class="btn_actions"><u>C</u>rop</a><a href="#" id="btn_resize" class="btn_actions"><u>S</u>ize</a>
+        <div class="panelhead">Crop options</div>
+      	<fieldset>
+            <select class="selection" id="options_crop">
+            <option value="5;4">Článek (5:4)</option>
+            <option value="100;29" selected="selected">Bleskovka (100:29)</option>
+            <option value="16;9">Video (16:9)</option>
+            <option value=";">Volný poměr</option>
+          </select>
+          <br/>
+           <span><input type="number" id="frmWratio"/> : <input type="number" id="frmHratio"/></span>
+        </fieldset>
+        <div class="panelhead">Size options</div>
+      	
+        <fieldset>
+            <select class="selection" id="options_size">
+            <option value="240;192">Článek (240×192 px)</option>
+            <option value="100;29" selected="selected">Bleskovka (100×29 px)</option>
+            <option value="1280;720">720p (1280×720 px)</option>
+            <option value="1920;1080">1080p (1920×1080 px)</option>
+            <option value="550;">šířka 550</option>
+            <option value=";1200">výška 1200</option>
+
+          </select>
+          <br/>
+            <input type="number" id="frmWidth"/>×<input type="number" id="frmHeight"/> px
+        </fieldset>
+		
+		<div class="panelhead">Rotation</div>
+        <fieldset>
+        	<div class="slidermaster"><div id="slrotate"></div></div>        
+        	<input type="number" id="frmAngle"/> °
+		</fieldset>
+		
+		<div class="panelhead">File type</div>
+        <fieldset style="text-align:center">
+        	<div id="filetype" class=toggle><input type="checkbox" id="cbFiletype" value="JPG" checked></div>
+        </fieldset>
+		<div class="panelhead">Advanced</div>
+        <fieldset style="text-align:center">
+		<a href="#" id="btn_dlglevels" class="btn_image">Levels</a>
+		
+		</fieldset>
+      	</div>
+    </div>
+    
+    <!-- Adjust Levels Dialog -->    
+    	<div id="dlgLevels">
+    	<div class="panelhead">Adjust Levels</div>	
+    	<fieldset>
+    	<canvas id="cnvHist" style="margin-left:0px;border:6px solid #ccc;background:#fff;" width=256 height=100></canvas><br/>
+    	</fieldset>
+    	<fieldset>
+    	in range:
+    	<div class="slidermaster" style="width:256px;"><div id="slinrange"></div></div>
+    	<input type="number" id="frminrangemin"/> <input style="float:right" type="number" id="frminrangemax"/>
+    	</fieldset>
+    	<fieldset>
+    	out range:
+    	<div class="slidermaster" style="width:256px;"><div id="sloutrange"></div></div>
+    	<input type="number" id="frmoutrangemin"/> <input style="float:right" type="number" id="frmoutrangemax"/>
+    	</fieldset>
+    	<fieldset>
+    	gamma:
+    	<div class="slidermaster" style="width:256px;"><div id="slgamma"></div></div>
+    	<input type="number" id="frmgamma"/><br/>
+    	</fieldset>
+    	<fieldset style="text-align:center">
+    	<a href="#" style="margin-right:20px" id="btLevelsApply" class="btn_image">Apply</a>
+		<a href="#" id="btLevelsReset" class="btn_image">Reset</a>
+		<a href="#" style="margin-left:20px" id="btLevelsDone" class="btn_image">Done</a>
+    	</fieldset>
+    </div>
+    
+    
+   <!-- Status bar -->       
+    <div id="statusbar">
+	    <span class="statuslabel" title="dvojklik na obrázek mění režim">mode:</span>
+	    	<div  title="doubleclick the picture to change mode" class="statusitem" id="modeswitch">canvas</div>
+	    <span class="statuslabel">dimensions:</span>
+	    	<div class="statusitem" id="sbDim">0 × 0 px</div>
+	    <span class="statuslabel">selection:</span>
+	    	<div class="statusitem" id="sbCoords">0 × 0 px</div>
+	    <span class="statuslabel">zoom:</span>
+	    	<div class="statusitem" id="sbZoom">100 %</div>
+	    <div class="statusinfo" id="btAbout">About Cropsizer...</div>	
+    </div>
+    <div class="about" style="display:none" id="aboutbox">
+	    <img alt="" style="float:right" width=90 height=60 src="thlogo.gif"/><strong>Cropsizer</strong><br />
+	    build: <a href="history.txt">140311</a><br/>
+        &copy; 2014 Tomáš Holčík<br/><a href="https://plus.google.com/+TomášHolčík">Google+</a><br/>      
+        <br/>
+        forked from Kloboukošop 0.2/140227<br/>
+        &copy;2014 Laboratoře psa v klobouku <br />
+ 	
+    </div>
+    
+   <!-- Work area -->       
+   
+    <div id="workarea">
+      <div id="droptarget">Drop file here<br/>or press Ctrl-V</div>
+      <canvas id="canvas" style="display:none" ></canvas>
+      <div id="rectangle">
+      	<div class="cornerpin" id="cornertl"></div>
+      	<div class="cornerpin" id="cornertr"></div>
+      	<div class="cornerpin" id="cornerbl"></div>
+      	<div class="cornerpin" id="cornerbr"></div>
+      </div>
+      <div id="metrics"></div>      
+    </div>
+  </body>
+</html>
